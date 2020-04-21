@@ -37,10 +37,15 @@ namespace DesktopContactsApp
 
         void readDatabase()
         {
+            List<Contact> contacts;
             using (SQLite.SQLiteConnection connection = new SQLite.SQLiteConnection(App.databasePath))
             {
                 connection.CreateTable<Contact>(); //can be called twice and will not create the table again
-                var contacts = connection.Table<Contact>().ToList(); //to list is nessesary to have a usable variable in c# in this instance
+                contacts = connection.Table<Contact>().ToList(); //to list is nessesary to have a usable variable in c# in this instance
+            }
+            if (contacts != null)
+            {
+                contactsListView.ItemsSource = contacts; //This is basically a for each loop
             }
         }
     }
