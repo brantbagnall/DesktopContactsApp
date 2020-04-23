@@ -21,11 +21,14 @@ namespace DesktopContactsApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<Contact> contacts;
         public MainWindow()
         {
             InitializeComponent();
 
             readDatabase();
+
+            contacts = new List<Contact>();
         }
         private void Button_Click (object sender, RoutedEventArgs e)
         {
@@ -37,7 +40,6 @@ namespace DesktopContactsApp
 
         void readDatabase()
         {
-            List<Contact> contacts;
             using (SQLite.SQLiteConnection connection = new SQLite.SQLiteConnection(App.databasePath))
             {
                 connection.CreateTable<Contact>(); //can be called twice and will not create the table again
@@ -47,6 +49,15 @@ namespace DesktopContactsApp
             {
                 contactsListView.ItemsSource = contacts; //This is basically a for each loop
             }
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox searchTextBox = sender as TextBox;
+
+            var filteredList = contacts.Where(c => c.Name.ToLower().Contains(searchTextBox.Text.ToLower())).ToList();
+
+            contactsListView.ItemsSource = filteredList;
         }
     }
 }
